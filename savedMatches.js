@@ -154,27 +154,6 @@
                                 userResult: latestMatchData.userResult // 'won' or 'lost'
                             });
 
-                            // Eğer maç kazandıysa ve kategori "Free" değilse, maçı "winners" kısmına taşı
-                            if (latestMatchData.userResult === 'won' && category !== 'Free') {
-                                // Önce kontrol edelim, 'winners' kısmında zaten varsa tekrar eklemeyelim
-                                const winnerSnapshot = await firebase.database().ref(`winners/${date}/${matchId}`).once('value');
-                                if (!winnerSnapshot.exists()) {
-                                    await firebase.database().ref(`winners/${date}/${matchId}`).set({
-                                        ...match,
-                                        halftimeScore: latestMatchData.halftimeScore,
-                                        fulltimeScore: latestMatchData.fulltimeScore,
-                                        apiResult: latestMatchData.apiResult,
-                                        time: latestMatchData.matchTime,
-                                        status: latestMatchData.matchStatus,
-                                        userResult: latestMatchData.userResult,
-                                        category: category
-                                    });
-                                }
-
-                                // Orijinal kategoriden sil
-                               
-                            }
-
                             // Yerel değişkene verileri ekle
                             match.halftimeScore = latestMatchData.halftimeScore;
                             match.fulltimeScore = latestMatchData.fulltimeScore;
@@ -188,6 +167,7 @@
                         allMatchesData.push({
                             date: date,
                             category: category,
+                            matchId: matchId, // matchId ekliyoruz
                             matchData: match
                         });
 
@@ -214,18 +194,15 @@
         const matchContainer = document.getElementById('savedMatchContainer');
         matchContainer.innerHTML = '';
 
+        // Maçları benzersiz hale getir
         const uniqueMatches = [];
         matchesArray.forEach(item => {
-            if (!uniqueMatches.some(match => match.matchData.matchId === item.matchData.matchId)) {
+            if (!uniqueMatches.some(match => match.matchData.matchId === item.matchData.matchId && match.category === item.category && match.date === item.date)) {
                 uniqueMatches.push(item);
             }
         });
-    
+
         if (uniqueMatches.length === 0) {
-            matchContainer.innerHTML = '<p>Seçilen kategori için maç bulunamadı.</p>';
-            return;
-        }
-        if (matchesArray.length === 0) {
             matchContainer.innerHTML = '<p>Seçilen kategori için maç bulunamadı.</p>';
             return;
         }
@@ -237,7 +214,7 @@
         // Tablo başlık satırı
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
-        const headers = ['Tarih', 'Kategori', 'Lig', 'Saat', 'Ev', 'Konuk', 'Tahmin', 'Oran', 'İY', 'MS', 'Sonuç', 'Tahmin'];
+        const headers = ['Tarih', 'Kategori', 'Lig', 'Saat', 'Ev', 'Konuk', 'Tahmin', 'Oran', 'İY', 'MS', 'Sonuç', 'Tahmin', 'Sil'];
 
         headers.forEach(headerText => {
             const th = document.createElement('th');
@@ -251,8 +228,8 @@
         // Tablo gövdesi
         const tbody = document.createElement('tbody');
 
-        matchesArray.forEach(item => {
-            const { date, category, matchData } = item;
+        uniqueMatches.forEach(item => {
+            const { date, category, matchId, matchData } = item;
 
             const row = document.createElement('tr');
 
@@ -325,6 +302,31 @@
 
             row.appendChild(actionCell);
 
+            // Silme butonu için hücre
+            const deleteCell = document.createElement('td');
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Sil';
+            deleteButton.addEventListener('click', async () => {
+                const confirmDelete = confirm('Bu maçı silmek istediğinize emin misiniz?');
+                if (confirmDelete) {
+                    try {
+                        // Firebase'den sil
+                        await firebase.database().ref(`predictions/${date}/${category}/${matchId}`).remove();
+
+                        // allMatchesData'dan sil
+                        allMatchesData = allMatchesData.filter(m => !(m.date === date && m.category === category && m.matchId === matchId));
+
+                        // Arayüzü güncelle
+                        displayMatches(allMatchesData);
+                    } catch (error) {
+                        console.error('Maç silinirken hata oluştu:', error);
+                        alert('Maç silinirken bir hata oluştu.');
+                    }
+                }
+            });
+            deleteCell.appendChild(deleteButton);
+            row.appendChild(deleteCell);
+
             tbody.appendChild(row);
         });
 
@@ -342,8 +344,7 @@
             displayMatches(filteredMatches);
         } else {
             displayMatches(allMatchesData);
-        }
-    }
+        }}
 
     // Maç skorlarını ve saatini API'den alan fonksiyon
     async function getLatestMatchScores(matchId, match) {
@@ -766,38 +767,65 @@ function checkPredictionResult(fixture, match) {
     }
   }
   
-    // Progress bar oluşturma fonksiyonları
-    function createProgressBar() {
-        const progressBarContainer = document.createElement('div');
-        progressBarContainer.id = 'progressBarContainer';
-        progressBarContainer.style.width = '100%';
-        progressBarContainer.style.backgroundColor = '#ccc';
+  function createProgressBar() {
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.id = 'progressBarContainer';
+    progressBarContainer.style.width = '100%';
+    progressBarContainer.style.backgroundColor = '#ccc';
 
-        const progressBar = document.createElement('div');
-        progressBar.id = 'progressBar';
-        progressBar.style.width = '0%';
-        progressBar.style.height = '20px';
-        progressBar.style.backgroundColor = '#4caf50';
+    const progressBar = document.createElement('div');
+    progressBar.id = 'progressBar';
+    progressBar.style.width = '0%';
+    progressBar.style.height = '20px';
+    progressBar.style.backgroundColor = '#4caf50';
 
-        progressBarContainer.appendChild(progressBar);
-        const matchContainer = document.getElementById('savedMatchContainer');
-        matchContainer.appendChild(progressBarContainer);
+    progressBarContainer.appendChild(progressBar);
+    const matchContainer = document.getElementById('savedMatchContainer');
+    matchContainer.appendChild(progressBarContainer);
+}
+
+function updateProgressBar(processed, total) {
+    const progressBar = document.getElementById('progressBar');
+    const percentage = Math.round((processed / total) * 100);
+    progressBar.style.width = percentage + '%';
+}
+
+function removeProgressBar() {
+    const progressBarContainer = document.getElementById('progressBarContainer');
+    if (progressBarContainer) {
+        progressBarContainer.parentNode.removeChild(progressBarContainer);
     }
+}
 
-    function updateProgressBar(processed, total) {
-        const progressBar = document.getElementById('progressBar');
-        const percentage = Math.round((processed / total) * 100);
-        progressBar.style.width = percentage + '%';
-    }
-
-    function removeProgressBar() {
-        const progressBarContainer = document.getElementById('progressBarContainer');
-        if (progressBarContainer) {
-            progressBarContainer.parentNode.removeChild(progressBarContainer);
+// Responsive tasarım için basit bir CSS ekleyelim (isteğe bağlı)
+function addResponsiveStyles() {
+    const style = document.createElement('style');
+    style.innerHTML = `
+        @media screen and (max-width: 600px) {
+            .matches-table, .matches-table thead, .matches-table tbody, .matches-table th, .matches-table td, .matches-table tr {
+                display: block;
+            }
+            .matches-table tr {
+                margin-bottom: 15px;
+            }
+            .matches-table td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+            .matches-table td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 50%;
+                padding-left: 15px;
+                font-weight: bold;
+                text-align: left;
+            }
         }
-    }
+    `;
+    document.head.appendChild(style);
+}
 
-
-
-    window.addEventListener('load', loadSavedMatches);
+window.addEventListener('load', loadSavedMatches);
 })();

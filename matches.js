@@ -198,7 +198,7 @@
         // Tablo başlık satırını oluştur
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
-        const headers = ['Tarih', 'Lig', 'Ev Sahibi', 'Konuk', 'Tahmin Yap'];
+        const headers = ['Tarih', 'Lig', 'Ev Sahibi', 'Konuk', 'İlk Yarı', 'Maç Sonu', 'Tahmin Yap'];
 
         headers.forEach(headerText => {
             const th = document.createElement('th');
@@ -216,6 +216,7 @@
             const fixture = matchData.fixture;
             const teams = matchData.teams;
             const league = matchData.league;
+            const score = matchData.score;
 
             const row = document.createElement('tr');
 
@@ -239,18 +240,36 @@
             awayTeamCell.textContent = teams.away.name;
             row.appendChild(awayTeamCell);
 
+            // İlk yarı sonucu
+            const firstHalfCell = document.createElement('td');
+            if (score.halftime && score.halftime.home !== null && score.halftime.away !== null) {
+                firstHalfCell.textContent = `${score.halftime.home} - ${score.halftime.away}`;
+            } else {
+                firstHalfCell.textContent = '-';
+            }
+            row.appendChild(firstHalfCell);
+
+            // Maç sonu sonucu
+            const fullTimeCell = document.createElement('td');
+            if (score.fulltime && score.fulltime.home !== null && score.fulltime.away !== null) {
+                fullTimeCell.textContent = `${score.fulltime.home} - ${score.fulltime.away}`;
+            } else {
+                fullTimeCell.textContent = '-';
+            }
+            row.appendChild(fullTimeCell);
+
             // Aksiyon butonları için hücre
             const actionCell = document.createElement('td');
 
             // TE (Tahmin Et) butonu
             const toggleFormBtn = document.createElement('button');
             toggleFormBtn.className = 'toggleFormBtn';
-            toggleFormBtn.textContent = 'TE'; // Buton adını TE olarak değiştirdik
+            toggleFormBtn.textContent = 'TE';
 
             // MTE (Manuel Tahmin Et) butonu
             const manualFormBtn = document.createElement('button');
             manualFormBtn.className = 'manualFormBtn';
-            manualFormBtn.textContent = 'MTE'; // MTE butonunu ekledik
+            manualFormBtn.textContent = 'MTE';
 
             // Her maç için form takip değişkenlerini burada tanımlıyoruz
             let predictionForm = null; // Tahmin formunu takip etmek için
