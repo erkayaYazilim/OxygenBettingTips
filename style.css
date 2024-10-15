@@ -1,0 +1,1178 @@
+/* Genel Stil Ayarları */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f7f9;
+    color: #000000;
+    overflow-x: hidden;
+}
+
+/* Ana Konteyner ve Düzen */
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sol Navigasyon Menüsü */
+.sidebar {
+    width: 220px;
+    background-color: #1a2b48;
+    min-height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding-top: 20px;
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    text-align: center;
+    padding: 20px 0;
+    color: #fff;
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 1.8em;
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-links li {
+    text-align: center;
+    margin: 15px 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 1.1em;
+    display: block;
+    padding: 10px 0;
+    transition: background-color 0.3s;
+}
+
+.nav-links a:hover {
+    background-color: #2e4a78;
+}
+
+/* Ana İçerik Alanı */
+.main-content {
+    flex: 1;
+    margin-left: 220px;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+header h1 {
+    color: #1a2b48;
+    font-size: 2em;
+    margin: 0;
+    padding: 15px 0;
+}
+
+/* Hamburger Menü Toggle */
+.menu-toggle-checkbox {
+    display: none;
+}
+
+.menu-toggle-label {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    font-size: 2em;
+    color: #1a2b48;
+    cursor: pointer;
+    z-index: 1100;
+}
+
+.menu-toggle-label:hover {
+    color: #2e4a78;
+}
+
+/* Buton ve Genel Stil Ayarları */
+.button-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.button-container button {
+    padding: 8px 16px;
+    margin: 5px;
+    background-color: #0069d9;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 0.9em;
+    border-radius: 4px;
+}
+
+.button-container button:hover {
+    background-color: #0053ba;
+}
+
+.date-btn, .category-btn {
+    background-color: #28a745;
+}
+
+.date-btn:hover, .category-btn:hover {
+    background-color: #218838;
+}
+
+/* Arama Kutusu Stili */
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.search-container input {
+    width: 70%;
+    max-width: 400px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+    border-radius: 4px 0 0 4px;
+    outline: none;
+}
+
+.search-container input:focus {
+    border-color: #007bff;
+}
+
+.search-container button {
+    padding: 8px 16px;
+    border: none;
+    background-color: #0069d9;
+    color: #fff;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 0 4px 4px 0;
+}
+
+.search-container button:hover {
+    background-color: #0053ba;
+}
+
+/* Maçlar Tablosu */
+.table-container {
+    overflow-x: auto;
+}
+
+.matches-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.matches-table th,
+.matches-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.matches-table th {
+    background-color: #1a2b48;
+    color: #fff;
+    font-weight: bold;
+}
+
+.matches-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.matches-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.matches-table button.toggleFormBtn {
+    padding: 6px 12px;
+    font-size: 0.9em;
+    background-color: #0069d9;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.matches-table button.toggleFormBtn:hover {
+    background-color: #0053ba;
+}
+
+/* Tahmin Formu Stili */
+.prediction-form {
+    background-color: #fff;
+    padding: 15px;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+}
+
+.prediction-form h4 {
+    margin: 10px 0 5px;
+    font-size: 1em;
+    color: #444;
+}
+
+.prediction-form input,
+.prediction-form select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+    border-radius: 4px;
+}
+
+.prediction-form input:focus,
+.prediction-form select:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+button.saveBtn {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    font-size: 1em;
+}
+
+button.saveBtn:hover {
+    background-color: #218838;
+}
+
+/* Kullanıcı Tablosu */
+.user-table {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.table-header, .user-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 3fr;
+    padding: 12px;
+    align-items: center;
+    border-bottom: 1px solid #ececec;
+}
+
+.table-header {
+    background-color: #1a2b48;
+    color: #fff;
+    font-weight: bold;
+}
+
+.user-row {
+    background-color: #fff;
+    transition: background-color 0.3s ease;
+}
+
+.user-row:hover {
+    background-color: #f1f1f1;
+}
+
+.user-row span {
+    text-align: center;
+}
+
+.coins-input {
+    width: 150px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.message-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.message-container textarea {
+    width: 100%;
+    padding: 6px;
+    margin-bottom: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+.message-container button {
+    padding: 6px 12px;
+    background-color: #0069d9;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.message-container button:hover {
+    background-color: #0053ba;
+}
+
+.subscription-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.package-cell {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    flex: 1 1 calc(50% - 16px);
+    box-sizing: border-box;
+}
+
+.package-cell input {
+    margin-top: 6px;
+}
+
+.package-cell button {
+    margin-top: 6px;
+    padding: 6px 12px;
+    background-color: #ffc107;
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.package-cell button:hover {
+    background-color: #e0a800;
+}
+
+/* Duyuru Güncelleme Sayfası */
+.announcement-container {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.announcement-container h2 {
+    font-size: 24px;
+    color: #1a2b48;
+    margin-bottom: 20px;
+}
+
+.announcement-container label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #333;
+}
+
+.announcement-container .input-text,
+.announcement-container select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    font-size: 1em;
+}
+
+.announcement-container button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    font-size: 1em;
+}
+
+.announcement-container button:hover {
+    background-color: #218838;
+}
+
+.announcement-container h3 {
+    margin-top: 20px;
+    font-size: 20px;
+    color: #333;
+}
+
+#current-announcement {
+    font-size: 16px;
+    color: #555;
+    margin-top: 10px;
+}
+
+/* Bildirim Gönderme Formu */
+.notification-form {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.notification-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: border 0.3s ease;
+    font-size: 1em;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #007bff;
+}
+
+.form-group textarea {
+    resize: vertical;
+    height: 80px;
+}
+
+.form-group button {
+    width: 100%;
+    padding: 10px;
+    background-color: #1a2b48;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-group button:hover {
+    background-color: #163a67;
+}
+
+#status-message {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #28a745;
+}
+
+/* Mobil Uyumluluk ve Hamburger Menü */
+@media (max-width: 992px) {
+    .menu-toggle-label {
+        display: block;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .menu-toggle-checkbox:checked ~ .sidebar {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .matches-table th,
+    .matches-table td {
+        padding: 6px;
+        font-size: 12px;
+    }
+
+    .button-container button {
+        padding: 6px 10px;
+        font-size: 0.8em;
+    }
+
+    .announcement-container,
+    .notification-form {
+        padding: 15px;
+    }
+
+    .announcement-container h2,
+    .notification-form h2 {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .nav-links li {
+        margin: 10px 0;
+    }
+
+    .nav-links a {
+        font-size: 1em;
+        padding: 8px 0;
+    }
+
+    header h1 {
+        font-size: 1.5em;
+    }
+
+    .button-container button {
+        padding: 5px 8px;
+        font-size: 0.75em;
+    }
+
+    .matches-table th,
+    .matches-table td {
+        padding: 4px;
+        font-size: 10px;
+    }
+
+    .prediction-form h4 {
+        font-size: 0.9em;
+    }
+
+    .prediction-form input,
+    .prediction-form select {
+        padding: 6px;
+        font-size: 0.9em;
+    }
+
+    button.saveBtn {
+        padding: 8px 16px;
+        font-size: 0.9em;
+    }
+}
+
+/* Abonelikler Tablosu Tasarımı */
+.subscription-container {
+    width: 100%;
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Tablo Başlığı Stili */
+.subscription-header-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    background-color: #1a2b48;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 12px 0;
+    text-align: center;
+}
+
+.subscription-header-cell {
+    padding: 10px;
+    border-right: 1px solid #ffffff;
+}
+
+.subscription-header-cell:last-child {
+    border-right: none; /* Son hücrede kenarlık yok */
+}
+
+/* Tablo Satır Stili */
+.subscription-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    background-color: #ffffff;
+    text-align: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f1f1;
+    transition: background-color 0.3s ease;
+}
+
+.subscription-row:hover {
+    background-color: #f9f9f9;
+}
+
+/* Abonelik Hücre Stili */
+.subscription-cell {
+    padding: 10px;
+    border-right: 1px solid #f1f1f1;
+}
+
+.subscription-cell:last-child {
+    border-right: none;
+}
+
+/* Tarih Seçici Stili */
+.date-input {
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+    width: 90%;
+    text-align: center;
+    margin: 0 auto;
+}
+
+/* Güncelleme Butonu */
+.subscription-btn {
+    padding: 6px 12px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.subscription-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Mobil Uyumlu Düzen */
+@media (max-width: 768px) {
+    .subscription-header-row,
+    .subscription-row {
+        grid-template-columns: 1fr 1fr 1fr; /* Mobilde üç sütun */
+    }
+
+    .subscription-cell,
+    .subscription-header-cell {
+        padding: 8px;
+    }
+}
+
+@media (max-width: 576px) {
+    .subscription-header-row,
+    .subscription-row {
+        grid-template-columns: 1fr 1fr; /* Küçük ekranlarda iki sütun */
+    }
+
+    .subscription-cell,
+    .subscription-header-cell {
+        padding: 6px;
+    }
+}
+
+
+
+
+
+
+.user-management-container {
+    margin: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Arama kutusu */
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.search-container input {
+    width: 70%;
+    max-width: 400px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+}
+
+.search-container button {
+    padding: 8px 16px;
+    border: none;
+    background-color: #0069d9;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 0 4px 4px 0;
+}
+
+/* Kullanıcı Tablosu */
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.table-header,
+.user-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.table-header {
+    background-color: #1a2b48;
+    color: #ffffff;
+}
+
+.user-row {
+    background-color: #f9f9f9;
+    transition: background-color 0.3s ease;
+}
+
+.user-row:hover {
+    background-color: #f1f1f1;
+}
+
+/* Coin girişi ve buton */
+.coins-input {
+    width: 150px; /* Genişliği artırdık */
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: right; /* Yazıyı sağa hizalayalım */
+    box-sizing: border-box; /* İçerik ve padding toplam genişliğe dahil edilir */
+}
+
+
+.save-btn {
+    margin-left: 5px;
+    background-color: #28a745;
+}
+
+/* Butonlar */
+.btn {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #ffc107;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #e0a800;
+}
+
+/* Pop-up Abonelik Detayları */
+.subscription-popup {
+    display: none; /* Başlangıçta gizli */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.subscription-container {
+    width: 60%;
+    max-width: 500px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Abonelik Detay Satırları */
+.subscription-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-top: 10px;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.subscription-cell {
+    padding: 8px;
+    text-align: center;
+}
+
+.date-input {
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Güncelleme Butonu */
+.subscription-btn {
+    padding: 6px 12px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.subscription-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Mobil Uyumluluk */
+@media (max-width: 768px) {
+    .table-header, .user-row, .subscription-row {
+        grid-template-columns: 1fr 1fr; /* Mobilde iki sütun */
+    }
+    .search-container input {
+        width: 60%;
+    }
+}
+.purchase-item {
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+.purchase-item:hover {
+    transform: scale(1.02);
+}
+.purchase-item span {
+    display: block;
+    margin: 5px 0;
+}
+.purchase-item .index {
+    font-weight: bold;
+}
+.purchase-item .id {
+    font-style: italic;
+    color: #007bff;
+}
+.purchase-item .content {
+    margin-top: 8px;
+}
+
+.settings-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Yüzde değerle tam genişlik kullanımı */
+    max-width: 1200px; /* Maksimum genişliği belirledik */
+    padding: 20px;
+    box-sizing: border-box; /* Padding ve border genişliğe dahil edilir */
+}
+
+
+/* Başlık */
+.settings-title {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+/* Form grubu */
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.form-group label {
+    width: 150px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+    display: flex;
+    align-items: center;
+}
+
+/* İkon stili */
+.form-group label i {
+    margin-right: 8px;
+}
+
+/* Input alanları */
+.input-text {
+    flex: 1;
+    width: 400px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+}
+
+.input-text:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Kaydet butonu */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 15px 0;
+    transition: background-color 0.3s;
+}
+
+.btn i {
+    margin-right: 8px;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+/* Ayar durumu mesajı */
+#settings-status {
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+
+
+.login-container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    
+    /* Ortalamak için eklenen kodlar */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+.login-container h2 {
+    margin-bottom: 20px;
+    font-weight: 900;
+    color: #3c3c3c;
+    font-size: 28px;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 15px;
+    margin: 15px 0;
+    border: none;
+    border-radius: 30px;
+    background-color: #f7f7f7;
+    font-size: 16px;
+    color: #333;
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease;
+}
+
+.login-container input:focus {
+    background-color: #ececec;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.4);
+}
+
+.login-container button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    width: 100%;
+    margin-top: 20px;
+    transition: background-color 0.4s ease, transform 0.3s ease;
+}
+
+.login-container button:hover {
+    background-color: #5a67d8;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(91, 134, 229, 0.4);
+}
+
+.login-container .social-login {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 0;
+}
+
+.social-login button {
+    width: 48%;
+    padding: 12px;
+    font-size: 14px;
+    background-color: #f7f7f7;
+    color: #333;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.4s ease, transform 0.3s ease;
+}
+
+.social-login button:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.social-login button i {
+    margin-right: 10px;
+}
+
+.forgot-password {
+    color: #667eea;
+    text-decoration: none;
+    font-size: 14px;
+    display: block;
+    margin-top: 15px;
+    transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+    color: #5a67d8;
+    text-shadow: 0 2px 5px rgba(90, 103, 216, 0.5);
+}
+
+/* Animasyonlar */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Manuel Tahmin Formu Tasarımı */
+.manual-prediction-form {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-top: 15px;
+}
+
+.manual-prediction-form h4 {
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.manual-prediction-form input,
+.manual-prediction-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.manual-prediction-form input:focus,
+.manual-prediction-form select:focus {
+    border-color: #3c8ce7;
+    background-color: #f1f1f1;
+    outline: none;
+}
+
+.manual-prediction-form button {
+    background-color: #3c8ce7;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    transition: background-color 0.3s ease;
+    text-transform: uppercase;
+}
+
+.manual-prediction-form button:hover {
+    background-color: #2f6bb3;
+}
+
+.manual-prediction-form select {
+    background-color: #fff;
+    cursor: pointer;
+}
+
+
+.manual-prediction-form input[type="number"]::-webkit-outer-spin-button,
+.manual-prediction-form input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Mobil cihazlar için duyarlı tasarım */
+@media (max-width: 600px) {
+    .manual-prediction-form {
+        padding: 15px;
+    }
+
+    .manual-prediction-form button {
+        font-size: 14px;
+    }
+
+    .manual-prediction-form input,
+    .manual-prediction-form select {
+        font-size: 14px;
+        padding: 8px;
+    }
+}
