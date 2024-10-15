@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oxygen - Futbol Maç Tahmin Platformu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome için -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Firebase SDK'ları -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+</head>
+<body>
+    <!-- Giriş Yap Formu -->
+    <div  class="login-container" id="login-container" style="display: block;">
+        <h2>Okygen Betting Tips</h2>
+        <input type="email" id="login-email" placeholder="Kullanıcı Adı" required>
+        <input type="password" id="login-password" placeholder="Parola" required>
+        <button id="login-btn">Giriş Yap</button>
+    </div>
+
+    <!-- Ana Uygulama -->
+    <div class="container" id="app-container" style="display: none;">
+        <input type="checkbox" id="menu-toggle-checkbox" class="menu-toggle-checkbox">
+        
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Oxygen</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showHome()"><i class="fas fa-home"></i> Ana Sayfa</a></li>
+                <li><a href="#" onclick="showMatches()"><i class="fas fa-futbol"></i> Fikstür</a></li>
+                <li><a href="#" onclick="showSavedMatches()"><i class="fas fa-save"></i> Maçlar</a></li>
+                <li><a href="#" onclick="showPurchase()"><i class="fas fa-shopping-cart"></i> Satın Alma</a></li>
+                <li><a href="#" onclick="showUsers()"><i class="fas fa-users"></i> Kullanıcılar</a></li>
+                <li><a href="#" onclick="showNotificationForm()"><i class="fas fa-bell"></i> Bildirim Gönder</a></li>
+                <li><a href="#" onclick="showSettings()"><i class="fas fa-cog"></i> Ayarlar</a></li>
+                <li><a href="#" onclick="showAnnouncementPage()"><i class="fas fa-bullhorn"></i> Duyuru Güncelle</a></li>
+                <li><a href="#" onclick="showVipAbonelikler()"><i class="fas fa-star"></i> VIP Abonelikler</a></li>
+                <li><a href="#" onclick="loadWinnersMatches()"><i class="fas fa-trophy"></i> Winners</a></li>
+                <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a></li>
+            </ul>
+        </nav>
+
+        <div class="main-content" id="main-content">
+            <header>
+                <label for="menu-toggle-checkbox" class="menu-toggle-label" aria-label="Menüyü Aç/Kapat">
+                    ☰
+                </label>
+                <h1>Okygen Betting Tips</h1>
+            </header>
+            <div id="content"></div>
+        </div>
+    </div>
+
+    <!-- Harici JavaScript dosyalarını ekleme -->
+    <script src="matches.js"></script>
+    <script src="savedMatches.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
