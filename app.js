@@ -617,6 +617,10 @@ function showVipAbonelikler() {
                     <p><strong>${key}</strong>: ${abonelik.aboneler} aboneler</p>
                     <button onclick="updateAbonelik('${key}', 'increase')">Abone Sayısını Arttır</button>
                     <button onclick="updateAbonelik('${key}', 'decrease')">Abone Sayısını Azalt</button>
+                    <br>
+                    <label for="manualInput_${key}">Manuel Abone Sayısı Gir:</label>
+                    <input type="number" id="manualInput_${key}" value="${abonelik.aboneler}">
+                    <button onclick="setManualAbonelik('${key}')">Manuel Olarak Güncelle</button>
                 `;
                 vipListDiv.appendChild(abonelikDiv);
             });
@@ -651,6 +655,30 @@ function updateAbonelik(key, action) {
             });
     });
 }
+
+// Manuel abone sayısını güncelleme fonksiyonu
+function setManualAbonelik(key) {
+    const inputField = document.getElementById(`manualInput_${key}`);
+    const newCount = parseInt(inputField.value);
+
+    if (isNaN(newCount) || newCount < 0) {
+        alert('Geçerli bir abone sayısı girin.');
+        return;
+    }
+
+    const dbRef = firebase.database().ref('VipAbonelikler/' + key);
+
+    // Yeni abone sayısını Firebase'e kaydet
+    dbRef.update({ aboneler: newCount })
+        .then(() => {
+            alert(`${key} için abone sayısı manuel olarak güncellendi: ${newCount}`);
+            showVipAbonelikler(); // Sayfayı güncellemek için tekrar yükle
+        })
+        .catch((error) => {
+            console.error('Abone sayısı güncellenirken hata oluştu:', error);
+        });
+}
+
 async function loadWinnersMatches() {
     const matchContainer = document.getElementById('savedMatchContainer');
     matchContainer.innerHTML = '';
