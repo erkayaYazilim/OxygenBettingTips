@@ -1176,3 +1176,157 @@ button.saveBtn:hover {
         padding: 8px;
     }
 }
+
+.prediction-form,
+.manual-prediction-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Elemanlar arası boşluk */
+    align-items: center;
+    padding: 10px;
+    background-color: #f1f1f1; /* Form arka plan rengi */
+    border: 1px solid #ccc; /* Form kenarlığı */
+    border-radius: 5px; /* Köşe yuvarlama */
+    margin-top: 10px; /* Üst boşluk */
+}
+
+/* Etiketler (h4) Stili */
+.prediction-form h4,
+.manual-prediction-form h4 {
+    font-size: 14px;
+    margin: 0;
+    width: 120px; /* Etiket genişliği */
+    text-align: right;
+    padding-right: 10px;
+    box-sizing: border-box;
+}
+
+.prediction-form,
+.manual-prediction-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Elemanlar arası boşluk */
+    align-items: center;
+    padding: 10px;
+    background-color: #f9f9f9; /* Form arka plan rengi */
+    border: 1px solid #ddd; /* Form kenarlığı */
+    border-radius: 5px; /* Köşe yuvarlama */
+    margin-top: 10px; /* Üst boşluk */
+}
+
+/* Etiketler (h4) Stili */
+.prediction-form h4,
+.manual-prediction-form h4 {
+    font-size: 14px;
+    margin: 0;
+    width: 120px; /* Etiket genişliği */
+    text-align: right;
+    padding-right: 10px;
+    box-sizing: border-box;
+}
+
+/* Seçim ve Giriş Alanları */
+.prediction-form select,
+.manual-prediction-form select,
+.prediction-form input[type="number"],
+.manual-prediction-form input[type="number"] {
+    flex: 1 1 150px; /* Esnek genişlik */
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+/* Kayıt Butonu */
+.prediction-form button,
+.manual-prediction-form button {
+    padding: 6px 20px;
+    font-size: 14px;
+    background-color: #007bff; /* Buton arka plan rengi */
+    color: #fff; /* Buton yazı rengi */
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.prediction-form button:hover,
+.manual-prediction-form button:hover {
+    background-color: #0056b3; /* Buton hover arka plan rengi */
+}
+
+/* Responsive Düzenleme */
+@media (max-width: 768px) {
+    .prediction-form h4,
+    .manual-prediction-form h4 {
+        width: 100px;
+        padding-right: 5px;
+        font-size: 12px;
+    }
+
+    .prediction-form select,
+    .manual-prediction-form select,
+    .prediction-form input[type="number"],
+    .manual-prediction-form input[type="number"] {
+        flex: 1 1 120px;
+        font-size: 12px;
+    }
+
+    .prediction-form button,
+    .manual-prediction-form button {
+        padding: 5px 15px;
+        font-size: 12px;
+    }
+}
+.prediction-form h4,
+.manual-prediction-form h4 {
+    font-size: 14px;
+    margin: 0;
+    width: 30px; /* Etiket genişliği */
+    text-align: right;
+    padding-right: 10px;
+    box-sizing: border-box;
+}
+
+/* Takım Logosu Stili */
+.team-logo {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.matches-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.matches-table th, .matches-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.matches-table th {
+    background-color: #4CAF50;
+    color: white;
+    text-align: left;
+}
+
+.btn {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.btn-danger {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 3px;
+}
+
+.btn-danger:hover {
+    background-color: #da190b;
+}
+

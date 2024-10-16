@@ -232,12 +232,26 @@
 
             // Ev Sahibi takım sütunu
             const homeTeamCell = document.createElement('td');
-            homeTeamCell.textContent = teams.home.name;
+            const homeLogo = document.createElement('img');
+            homeLogo.src = teams.home.logo;
+            homeLogo.alt = teams.home.name + ' Logo';
+            homeLogo.className = 'team-logo';
+            homeTeamCell.appendChild(homeLogo);
+            const homeTeamName = document.createElement('span');
+            homeTeamName.textContent = teams.home.name;
+            homeTeamCell.appendChild(homeTeamName);
             row.appendChild(homeTeamCell);
-
-            // Konuk takım sütunu
+    
+            // Konuk takım sütunu (Logo ile birlikte)
             const awayTeamCell = document.createElement('td');
-            awayTeamCell.textContent = teams.away.name;
+            const awayLogo = document.createElement('img');
+            awayLogo.src = teams.away.logo;
+            awayLogo.alt = teams.away.name + ' Logo';
+            awayLogo.className = 'team-logo';
+            awayTeamCell.appendChild(awayLogo);
+            const awayTeamName = document.createElement('span');
+            awayTeamName.textContent = teams.away.name;
+            awayTeamCell.appendChild(awayTeamName);
             row.appendChild(awayTeamCell);
 
             // İlk yarı sonucu
@@ -339,71 +353,67 @@
     // Manuel tahmin formunu oluşturma fonksiyonu
     function createManualPredictionForm(fixtureId, fixtureDate, teams, league) {
         const manualForm = document.createElement('div');
-        manualForm.className = 'manual-prediction-form';
-        manualForm.style.display = 'block'; // İlk açıldığında görünür
-
-        // Manuel giriş başlığı
-        const header = document.createElement('h4');
-        header.textContent = 'Manuel Tahmin Girişi';
-        manualForm.appendChild(header);
-
+        manualForm.className = 'manual-prediction-form'; // CSS sınıfı
+    
         // Kategori seçimi
         const categoryLabel = document.createElement('h4');
-        categoryLabel.textContent = 'Kategori Seçimi:';
+        categoryLabel.textContent = 'Kategori:';
         const categorySelect = document.createElement('select');
         categorySelect.className = 'categorySelect';
         categorySelect.innerHTML = `<option value="">Kategori Seçin</option>
             ${categories.map(category => `<option value="${category}">${category}</option>`).join('')}`;
-        manualForm.appendChild(categoryLabel);
-        manualForm.appendChild(categorySelect);
-
-        // Tahmin Türü Seçimi
+    
+        // Tahmin Türü seçimi
         const predictionTypeLabel = document.createElement('h4');
         predictionTypeLabel.textContent = 'Tahmin Türü:';
         const predictionTypeSelect = document.createElement('select');
         predictionTypeSelect.className = 'predictionTypeSelect';
         predictionTypeSelect.innerHTML = `<option value="">Tahmin Türü Seçin</option>
             ${predictionTypes.map(type => `<option value="${type}">${type}</option>`).join('')}`;
-        manualForm.appendChild(predictionTypeLabel);
-        manualForm.appendChild(predictionTypeSelect);
-
-        // Tahmin Değeri Seçimi
+    
+        // Tahmin Değeri seçimi
         const predictionValueLabel = document.createElement('h4');
         predictionValueLabel.textContent = 'Tahmin Değeri:';
         const predictionValueSelect = document.createElement('select');
         predictionValueSelect.className = 'predictionValueSelect';
         predictionValueSelect.innerHTML = '<option value="">Önce Tahmin Türünü Seçin</option>';
         predictionValueSelect.disabled = true;
-        manualForm.appendChild(predictionValueLabel);
-        manualForm.appendChild(predictionValueSelect);
-
-        // Oran Girişi
+    
+        // Oran girişi
         const oddsLabel = document.createElement('h4');
         oddsLabel.textContent = 'Oran:';
         const oddsInput = document.createElement('input');
         oddsInput.type = 'number';
         oddsInput.step = '0.01';
-        oddsInput.placeholder = 'Oran girin (örn. 1.75)';
-        manualForm.appendChild(oddsLabel);
-        manualForm.appendChild(oddsInput);
-
-        // Coin Miktarı Girişi
+        oddsInput.placeholder = 'Oran girin';
+    
+        // Coin miktarı girişi
         const coinAmountLabel = document.createElement('h4');
         coinAmountLabel.textContent = 'Coin Miktarı:';
         const coinAmountInput = document.createElement('input');
         coinAmountInput.type = 'number';
         coinAmountInput.step = '0.01';
         coinAmountInput.placeholder = 'Coin miktarı girin';
-        manualForm.appendChild(coinAmountLabel);
-        manualForm.appendChild(coinAmountInput);
-
-        // Kaydet Butonu
+    
+        // Kaydet butonu
         const saveBtn = document.createElement('button');
         saveBtn.className = 'saveManualBtn';
         saveBtn.textContent = 'Kaydet';
+    
+        // Form elemanlarını ekle
+        manualForm.appendChild(categoryLabel);
+        manualForm.appendChild(categorySelect);
+        manualForm.appendChild(predictionTypeLabel);
+        manualForm.appendChild(predictionTypeSelect);
+        manualForm.appendChild(predictionValueLabel);
+        manualForm.appendChild(predictionValueSelect);
+        manualForm.appendChild(oddsLabel);
+        manualForm.appendChild(oddsInput);
+        manualForm.appendChild(coinAmountLabel);
+        manualForm.appendChild(coinAmountInput);
         manualForm.appendChild(saveBtn);
-
-        // Tahmin Türü seçildiğinde Tahmin Değerlerini güncelle
+    
+        // Tahmin türü seçildiğinde tahmin değerlerini güncelle
         predictionTypeSelect.addEventListener('change', () => {
             const selectedType = predictionTypeSelect.value;
             if (selectedType && predictionValues[selectedType]) {
@@ -480,122 +490,113 @@
     // Tahmin formunu oluşturma fonksiyonu
     function createPredictionForm(fixtureId, fixtureDate, teams, league) {
         const predictionForm = document.createElement('div');
-        predictionForm.className = 'prediction-form';
-        predictionForm.style.display = 'block'; // İlk açıldığında görünür
+    predictionForm.className = 'prediction-form'; // CSS sınıfı
 
-        // Kategori seçimi
-        const categoryLabel = document.createElement('h4');
-        categoryLabel.textContent = 'Kategori Seçimi:';
+    // Kategori seçimi
+    const categoryLabel = document.createElement('h4');
+    categoryLabel.textContent = 'Kategori:';
+    const categorySelect = document.createElement('select');
+    categorySelect.className = 'categorySelect';
+    categorySelect.innerHTML = `<option value="">Kategori Seçin</option>
+        ${categories.map(category => `<option value="${category}">${category}</option>`).join('')}`;
 
-        const categorySelect = document.createElement('select');
-        categorySelect.className = 'categorySelect';
-        categorySelect.innerHTML = `<option value="">Kategori Seçin</option>
-            ${categories.map(category => `<option value="${category}">${category}</option>`).join('')}`;
+    // Tahmin türü seçimi
+    const predictionTypeLabel = document.createElement('h4');
+    predictionTypeLabel.textContent = 'Tahmin Türü:';
+    const predictionTypeSelect = document.createElement('select');
+    predictionTypeSelect.className = 'predictionType';
+    predictionTypeSelect.innerHTML = '<option value="">Yükleniyor...</option>';
+    predictionTypeSelect.disabled = true;
 
-        // Tahmin türü seçimi
-        const predictionTypeLabel = document.createElement('h4');
-        predictionTypeLabel.textContent = 'Tahmin Türü:';
+    // Tahmin değeri seçimi
+    const predictionValueLabel = document.createElement('h4');
+    predictionValueLabel.textContent = 'Tahmin:';
+    const predictionValueSelect = document.createElement('select');
+    predictionValueSelect.className = 'predictionValueSelect';
+    predictionValueSelect.innerHTML = '<option value="">Tahmin Türü Seçin</option>';
+    predictionValueSelect.disabled = true;
 
-        const predictionTypeSelect = document.createElement('select');
-        predictionTypeSelect.className = 'predictionType';
-        predictionTypeSelect.innerHTML = '<option value="">Yükleniyor...</option>';
-        predictionTypeSelect.disabled = true;
+    // Oran girişi
+    const oddsLabel = document.createElement('h4');
+    oddsLabel.textContent = 'Oran:';
+    const oddsInput = document.createElement('input');
+    oddsInput.type = 'number';
+    oddsInput.className = 'odds';
+    oddsInput.placeholder = 'Oran';
+    oddsInput.step = '0.01';
 
-        // Tahmin seçeneği
-        const predictionValueLabel = document.createElement('h4');
-        predictionValueLabel.textContent = 'Tahmin:';
+    // Coin miktarı girişi
+    const coinAmountLabel = document.createElement('h4');
+    coinAmountLabel.textContent = 'Coin Miktarı:';
+    const coinAmountInput = document.createElement('input');
+    coinAmountInput.type = 'number';
+    coinAmountInput.className = 'coinAmount';
+    coinAmountInput.placeholder = 'Coin miktarı girin';
+    coinAmountInput.step = '0.01';
 
-        const predictionValueSelect = document.createElement('select');
-        predictionValueSelect.className = 'predictionValueSelect';
-        predictionValueSelect.innerHTML = '<option value="">Tahmin Türü Seçin</option>';
-        predictionValueSelect.disabled = true;
+    // Kaydet butonu
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'saveBtn';
+    saveBtn.textContent = 'Kaydet';
+    saveBtn.disabled = true; // Oranlar yüklenene kadar devre dışı
 
-        // Oran
-        const oddsLabel = document.createElement('h4');
-        oddsLabel.textContent = 'Oran:';
+    // Form elemanlarını ekle
+    predictionForm.appendChild(categoryLabel);
+    predictionForm.appendChild(categorySelect);
+    predictionForm.appendChild(predictionTypeLabel);
+    predictionForm.appendChild(predictionTypeSelect);
+    predictionForm.appendChild(predictionValueLabel);
+    predictionForm.appendChild(predictionValueSelect);
+    predictionForm.appendChild(oddsLabel);
+    predictionForm.appendChild(oddsInput);
+    predictionForm.appendChild(coinAmountLabel);
+    predictionForm.appendChild(coinAmountInput);
+    predictionForm.appendChild(saveBtn);
 
-        const oddsInput = document.createElement('input');
-        oddsInput.type = 'number';
-        oddsInput.className = 'odds';
-        oddsInput.placeholder = 'Oran';
-        oddsInput.step = '0.01';
-        // oddsInput.readOnly = true; // Oran otomatik olarak doldurulacak
-        // Oran giriş alanını düzenlenebilir yaptık
+    // Tahmin türlerini yükle
+    fetchPredictionTypes(fixtureId, predictionTypeSelect, predictionValueSelect, oddsInput, saveBtn);
 
-        // Coin miktarı
-        const coinAmountLabel = document.createElement('h4');
-        coinAmountLabel.textContent = 'Coin Miktarı:';
+    // Tahmin türü seçildiğinde tahmin seçeneklerini ve oranı güncelle
+    predictionTypeSelect.addEventListener('change', () => {
+        const selectedType = predictionTypeSelect.value;
+        const bets = predictionTypeSelect.bets || [];
+        const selectedBet = bets.find(bet => bet.name === selectedType);
 
-        const coinAmountInput = document.createElement('input');
-        coinAmountInput.type = 'number';
-        coinAmountInput.className = 'coinAmount';
-        coinAmountInput.placeholder = 'Coin miktarı girin';
-        coinAmountInput.step = '0.01';
+        // Tahmin seçeneklerini temizle
+        predictionValueSelect.innerHTML = '<option value="">Tahmin Seçin</option>';
+        oddsInput.value = '';
+        predictionValueSelect.disabled = false;
 
-        // Kaydet butonu
-        const saveBtn = document.createElement('button');
-        saveBtn.className = 'saveBtn';
-        saveBtn.textContent = 'Kaydet';
-        saveBtn.disabled = true; // Oranlar yüklenene kadar devre dışı
+        if (selectedBet && selectedBet.values) {
+            selectedBet.values.forEach(value => {
+                const option = document.createElement('option');
+                option.value = value.value;
+                option.text = `${value.value} (Oran: ${value.odd})`;
+                predictionValueSelect.appendChild(option);
+            });
+        } else {
+            predictionValueSelect.disabled = true;
+        }
+    });
 
-        // Form öğelerini ekle
-        predictionForm.appendChild(categoryLabel);
-        predictionForm.appendChild(categorySelect);
-        predictionForm.appendChild(predictionTypeLabel);
-        predictionForm.appendChild(predictionTypeSelect);
-        predictionForm.appendChild(predictionValueLabel);
-        predictionForm.appendChild(predictionValueSelect);
-        predictionForm.appendChild(oddsLabel);
-        predictionForm.appendChild(oddsInput);
-        predictionForm.appendChild(coinAmountLabel);
-        predictionForm.appendChild(coinAmountInput);
-        predictionForm.appendChild(saveBtn);
+    // Tahmin seçildiğinde oranı doldur
+    predictionValueSelect.addEventListener('change', () => {
+        const selectedType = predictionTypeSelect.value;
+        const selectedValue = predictionValueSelect.value;
+        const bets = predictionTypeSelect.bets || [];
+        const selectedBet = bets.find(bet => bet.name === selectedType);
 
-        // Tahmin türlerini yükle
-        fetchPredictionTypes(fixtureId, predictionTypeSelect, predictionValueSelect, oddsInput, saveBtn);
-
-        // Tahmin türü değiştiğinde tahmin seçeneklerini ve oranı güncelle
-        predictionTypeSelect.addEventListener('change', () => {
-            const selectedType = predictionTypeSelect.value;
-            const bets = predictionTypeSelect.bets || [];
-            const selectedBet = bets.find(bet => bet.name === selectedType);
-
-            // Tahmin seçeneklerini temizle
-            predictionValueSelect.innerHTML = '<option value="">Tahmin Seçin</option>';
-            oddsInput.value = '';
-            predictionValueSelect.disabled = false;
-
-            if (selectedBet && selectedBet.values) {
-                selectedBet.values.forEach(value => {
-                    const option = document.createElement('option');
-                    option.value = value.value;
-                    option.text = `${value.value} (Oran: ${value.odd})`;
-                    predictionValueSelect.appendChild(option);
-                });
-            } else {
-                predictionValueSelect.disabled = true;
-            }
-        });
-
-        // Tahmin seçildiğinde oranı doldur
-        predictionValueSelect.addEventListener('change', () => {
-            const selectedType = predictionTypeSelect.value;
-            const selectedValue = predictionValueSelect.value;
-            const bets = predictionTypeSelect.bets || [];
-            const selectedBet = bets.find(bet => bet.name === selectedType);
-
-            if (selectedBet && selectedBet.values) {
-                const selectedPrediction = selectedBet.values.find(value => value.value === selectedValue);
-                if (selectedPrediction) {
-                    oddsInput.value = selectedPrediction.odd;
-                } else {
-                    oddsInput.value = '';
-                }
+        if (selectedBet && selectedBet.values) {
+            const selectedPrediction = selectedBet.values.find(value => value.value === selectedValue);
+            if (selectedPrediction) {
+                oddsInput.value = selectedPrediction.odd;
             } else {
                 oddsInput.value = '';
             }
-        });
-
+        } else {
+            oddsInput.value = '';
+        }
+    });
         saveBtn.addEventListener('click', () => {
             const selectedCategory = categorySelect.value;
             const predictionType = predictionTypeSelect.value;

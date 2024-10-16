@@ -88,7 +88,7 @@ function showUsers() {
 
     // Abonelik paketlerini tanımla
     const vipPackages = [
-        "Live Tips", "Sure", "HT/FT", "Coupon of the Day", "Multi Combine",
+        "Live Tips", "Sure", "HT-FT", "Coupon of the Day", "Multi Combine",
         "10+ Odds", "Editor’s Definitive Coupons", "Artificial Intelligence",
         "Correct Score", "Over-Under", "Diamond Package"
     ];
@@ -680,8 +680,16 @@ function setManualAbonelik(key) {
 }
 
 async function loadWinnersMatches() {
-    const matchContainer = document.getElementById('savedMatchContainer');
-    matchContainer.innerHTML = '';
+    // 'content' div'ini temizleyelim
+    const contentDiv = document.getElementById('content');
+    contentDiv.innerHTML = '';  // Mevcut içeriği temizle
+
+    // matchContainer oluştur ve content div'ine ekle
+    let matchContainer = document.createElement('div');
+    matchContainer.id = 'savedMatchContainer';
+    contentDiv.appendChild(matchContainer);
+
+    matchContainer.innerHTML = '<p>Veriler yükleniyor...</p>'; // İlk başta yükleniyor mesajı
 
     try {
         const snapshot = await firebase.database().ref('winners').once('value');
@@ -693,38 +701,37 @@ async function loadWinnersMatches() {
             return;
         }
 
-        const filteredMatches = [];
-        const today = new Date();
-        const past10Days = [...Array(10)].map((_, i) => {
-            const date = new Date(today);
-            date.setDate(today.getDate() - i);
-            return date.toISOString().split('T')[0];
-        });
+        // Tüm tarihleri al ve en yeni tarihler en üstte olacak şekilde sırala
+        const dates = Object.keys(datesData);
+        dates.sort((a, b) => new Date(b) - new Date(a)); // Yeni tarihler önce
 
-        past10Days.forEach(date => {
-            if (datesData[date]) {
-                for (const matchId in datesData[date]) {
-                    filteredMatches.push({
-                        date: date,
-                        ...datesData[date][matchId]
-                    });
-                }
+        const allMatches = [];
+
+        dates.forEach(date => {
+            const matches = datesData[date];
+            for (const matchId in matches) {
+                allMatches.push({
+                    date: date,
+                    matchId: matchId,
+                    ...matches[matchId]  // Tüm maç verilerini ekle
+                });
             }
         });
 
-        if (filteredMatches.length === 0) {
-            matchContainer.innerHTML = '<p>Son 10 gün içerisinde kazanan maç bulunamadı.</p>';
+        if (allMatches.length === 0) {
+            matchContainer.innerHTML = '<p>Winners kategorisinde maç bulunamadı.</p>';
             return;
         }
 
-        displayMatches(filteredMatches);
+        displayMatches(allMatches, dates);
 
     } catch (error) {
         console.error('Veri alınırken hata oluştu:', error);
+        matchContainer.innerHTML = '<p>Veri yüklenirken bir hata oluştu.</p>';
     }
 }
 
-function displayMatches(matchesArray) {
+function displayMatches(matchesArray, dates) {
     const matchContainer = document.getElementById('savedMatchContainer');
     matchContainer.innerHTML = '';
 
@@ -738,7 +745,7 @@ function displayMatches(matchesArray) {
 
     const thead = document.createElement('thead');
     const headerRow = document.createElement('tr');
-    const headers = ['Tarih', 'Lig', 'Saat', 'Ev', 'Konuk', 'Tahmin', 'Oran', 'İY', 'MS', 'Sonuç', 'Tahmin Sonucu'];
+    const headers = ['Lig', 'Saat', 'Ev', 'Konuk', 'Kategori', 'Sil'];
 
     headers.forEach(headerText => {
         const th = document.createElement('th');
@@ -751,59 +758,80 @@ function displayMatches(matchesArray) {
 
     const tbody = document.createElement('tbody');
 
-    matchesArray.forEach(match => {
-        const row = document.createElement('tr');
+    dates.forEach(date => {
+        const dateMatches = matchesArray.filter(match => match.date === date);
 
-        const dateCell = document.createElement('td');
-        dateCell.textContent = match.date;
-        row.appendChild(dateCell);
+        if (dateMatches.length > 0) {
+            // Tarih başlığı ekle
+            const dateRow = document.createElement('tr');
+            const dateCell = document.createElement('td');
+            dateCell.colSpan = headers.length;  // Tüm sütunları kapsasın
+            dateCell.textContent = `Tarih: ${date}`;
+            dateCell.style.fontWeight = 'bold';
+            dateCell.style.backgroundColor = '#f2f2f2';
+            dateRow.appendChild(dateCell);
+            tbody.appendChild(dateRow);
 
-        const leagueCell = document.createElement('td');
-        leagueCell.textContent = match.league;
-        row.appendChild(leagueCell);
+            dateMatches.forEach(match => {
+                const row = document.createElement('tr');
 
-        const timeCell = document.createElement('td');
-        timeCell.textContent = match.time || '-';
-        row.appendChild(timeCell);
+                const leagueCell = document.createElement('td');
+                leagueCell.textContent = match.league || '-';
+                row.appendChild(leagueCell);
 
-        const homeTeamCell = document.createElement('td');
-        homeTeamCell.textContent = match.homeTeam;
-        row.appendChild(homeTeamCell);
+                const timeCell = document.createElement('td');
+                timeCell.textContent = match.time || '-';
+                row.appendChild(timeCell);
 
-        const awayTeamCell = document.createElement('td');
-        awayTeamCell.textContent = match.awayTeam;
-        row.appendChild(awayTeamCell);
+                const homeTeamCell = document.createElement('td');
+                homeTeamCell.textContent = match.homeTeam || '-';
+                row.appendChild(homeTeamCell);
 
-        const predictionCell = document.createElement('td');
-        predictionCell.textContent = `${match.predictionType} - ${match.predictionValue}`;
-        row.appendChild(predictionCell);
+                const awayTeamCell = document.createElement('td');
+                awayTeamCell.textContent = match.awayTeam || '-';
+                row.appendChild(awayTeamCell);
 
-        const oddsCell = document.createElement('td');
-        oddsCell.textContent = match.odds || '-';
-        row.appendChild(oddsCell);
+                const categoryCell = document.createElement('td');
+                categoryCell.textContent = match.category || '-';
+                row.appendChild(categoryCell);
 
-        const halftimeScoreCell = document.createElement('td');
-        halftimeScoreCell.textContent = match.halftimeScore || '-';
-        row.appendChild(halftimeScoreCell);
+                // Sil butonu ekle
+                const deleteCell = document.createElement('td');
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Sil';
+                deleteButton.className = 'btn btn-danger';
+                deleteButton.addEventListener('click', () => {
+                    deleteMatch(match.date, match.matchId);
+                });
+                deleteCell.appendChild(deleteButton);
+                row.appendChild(deleteCell);
 
-        const fulltimeScoreCell = document.createElement('td');
-        fulltimeScoreCell.textContent = match.fulltimeScore || '-';
-        row.appendChild(fulltimeScoreCell);
-
-        const resultCell = document.createElement('td');
-        resultCell.textContent = match.apiResult || '-';
-        row.appendChild(resultCell);
-
-        const userResultCell = document.createElement('td');
-        userResultCell.textContent = match.userResult === 'won' ? 'Tuttu' : 'Tutmadı';
-        row.appendChild(userResultCell);
-
-        tbody.appendChild(row);
+                tbody.appendChild(row);
+            });
+        }
     });
 
     table.appendChild(tbody);
     matchContainer.appendChild(table);
 }
+
+function deleteMatch(date, matchId) {
+    if (confirm('Bu maçı silmek istediğinizden emin misiniz?')) {
+        firebase.database().ref(`winners/${date}/${matchId}`).remove()
+            .then(() => {
+                alert('Maç başarıyla silindi.');
+                // Maç silindikten sonra listeyi güncelle
+                loadWinnersMatches();
+            })
+            .catch((error) => {
+                console.error('Maç silinirken hata oluştu:', error);
+                alert('Maç silinirken bir hata oluştu.');
+            });
+    }
+}
+
+
+
 // Giriş yapma fonksiyonu
 function login() {
     const email = document.getElementById('login-email').value;
