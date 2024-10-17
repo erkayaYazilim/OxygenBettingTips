@@ -1329,4 +1329,13 @@ button.saveBtn:hover {
 .btn-danger:hover {
     background-color: #da190b;
 }
+/* Maçların bulunduğu container */
+#savedMatchContainer {
+    width: 100%;
+    overflow-x: auto; /* Taşan tablo için yatay kaydırma */
+}
 
+#matchContainer {
+    width: 100%;
+    overflow-x: auto; /* Taşan tablo için yatay kaydırma */
+}

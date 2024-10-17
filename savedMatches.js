@@ -4,6 +4,10 @@
 
     let selectedCategory = null; // Seçilen kategori
 
+    // API bilgileri
+    const apiKey = 'd4ac606f77mshefcba8ce9e6a37fp1bbe62jsne88a4b40c369'; // Kendi API anahtarınızı buraya ekleyin
+    const apiHost = 'api-football-v1.p.rapidapi.com'; // API host adresi
+
     // Maçları yükleyen fonksiyon
     window.loadSavedMatches = async function () {
         const contentDiv = document.getElementById('content');
@@ -116,7 +120,7 @@
                         allMatchesData.push({
                             date: date,
                             category: category,
-                            matchId: matchId, // matchId ekliyoruz
+                            matchId: matchId,
                             matchData: match
                         });
                     }
@@ -130,11 +134,91 @@
                 return dateTimeB - dateTimeA; // Ters sıralama
             });
 
+            // Maç skorlarını güncelle
+            await updateMatchScores();
+
             // Maçları görüntüle
             displayMatches(allMatchesData);
 
         } catch (error) {
             console.error('Veri alınırken hata oluştu:', error);
+        }
+    }
+
+    // Maç skorlarını güncelleyen fonksiyon
+    async function updateMatchScores() {
+        try {
+            for (const item of allMatchesData) {
+                const { date, category, matchId, matchData } = item;
+
+                // Eğer maç tamamlanmamışsa veya skor bilgileri eksikse
+                if (!matchData.fulltimeScore || !matchData.halftimeScore) {
+                    // API'den maç skorlarını çekelim
+                    const matchResult = await fetchMatchResultFromAPI(matchData.matchId);
+
+                    if (matchResult) {
+                        // Firebase'deki veriyi güncelle
+                        await firebase.database().ref(`predictions/${date}/${category}/${matchId}`).update({
+                            halftimeScore: matchResult.halftimeScore,
+                            fulltimeScore: matchResult.fulltimeScore
+                        });
+
+                        // allMatchesData'daki veriyi güncelle
+                        matchData.halftimeScore = matchResult.halftimeScore;
+                        matchData.fulltimeScore = matchResult.fulltimeScore;
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Maç skorları güncellenirken hata oluştu:', error);
+        }
+    }
+
+    // Maç sonuçlarını API'den çeken fonksiyon
+    async function fetchMatchResultFromAPI(fixtureId) {
+        try {
+            const url = `https://${apiHost}/v3/fixtures?id=${fixtureId}`;
+            const options = {
+                method: 'GET',
+                headers: {
+                    'X-RapidAPI-Key': apiKey,
+                    'X-RapidAPI-Host': apiHost
+                }
+            };
+
+            const response = await fetch(url, options);
+            const data = await response.json();
+
+            if (data.errors && Object.keys(data.errors).length > 0) {
+                console.error('API Hatası:', data.errors);
+                return null;
+            }
+
+            if (!data.response || data.response.length === 0) {
+                console.warn('Maç bulunamadı.');
+                return null;
+            }
+
+            const matchData = data.response[0];
+            const score = matchData.score;
+
+            let halftimeScore = '-';
+            if (score.halftime && score.halftime.home !== null && score.halftime.away !== null) {
+                halftimeScore = `${score.halftime.home} - ${score.halftime.away}`;
+            }
+
+            let fulltimeScore = '-';
+            if (score.fulltime && score.fulltime.home !== null && score.fulltime.away !== null) {
+                fulltimeScore = `${score.fulltime.home} - ${score.fulltime.away}`;
+            }
+
+            return {
+                halftimeScore: halftimeScore,
+                fulltimeScore: fulltimeScore
+            };
+        } catch (error) {
+            console.error('Maç sonucu çekilirken hata oluştu:', error);
+            return null;
         }
     }
 
@@ -146,7 +230,7 @@
         // Maçları benzersiz hale getir
         const uniqueMatches = [];
         matchesArray.forEach(item => {
-            if (!uniqueMatches.some(match => match.matchData.matchId === item.matchData.matchId && match.category === item.category && match.date === item.date)) {
+            if (!uniqueMatches.some(match => match.matchId === item.matchId && match.category === item.category && match.date === item.date)) {
                 uniqueMatches.push(item);
             }
         });
@@ -156,14 +240,17 @@
             return;
         }
 
+        const tableWrapper = document.createElement('div');
+        tableWrapper.style.overflowX = 'auto'; 
+
         // Maçları tablo şeklinde göster
         const table = document.createElement('table');
-        table.className = 'matches-table table table-striped table-bordered';
+        table.className = 'matches-table table table-striped table-bordered table-responsive';
 
         // Tablo başlık satırı
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
-        const headers = ['Tarih', 'Kategori', 'Lig', 'Saat', 'Ev', 'Konuk', 'Tahmin', 'Oran', 'Coin', 'İY', 'MS', 'Sonuç', 'Durum', 'Düzenle', 'Sil'];
+        const headers = ['Tarih', 'Kategori', 'Lig', 'Saat', 'Ev', 'Konuk', 'Tahmin', 'Oran', 'Coin', 'İY', 'MS', 'Sonuç', 'İşlemler'];
 
         headers.forEach(headerText => {
             const th = document.createElement('th');
@@ -246,36 +333,35 @@
                 <option value="won" ${matchData.userResult === 'won' ? 'selected' : ''}>Tuttu</option>
                 <option value="lost" ${matchData.userResult === 'lost' ? 'selected' : ''}>Tutmadı</option>
             `;
-            const statusCell = document.createElement('td');
-            statusCell.textContent = matchData.status || '-';
 
             resultSelect.addEventListener('change', () => {
-                updateMatchResult(item, resultSelect.value, statusCell);
+                updateMatchResult(item, resultSelect.value);
             });
             resultCell.appendChild(resultSelect);
             row.appendChild(resultCell);
 
-            // Durum Gösterimi
-            row.appendChild(statusCell);
+            // İşlemler (Düzenle ve Sil ikonları)
+            const actionsCell = document.createElement('td');
+            actionsCell.style.display = 'flex';
+            actionsCell.style.flexDirection = 'column';
+            actionsCell.style.alignItems = 'center';
 
-            // Düzenle butonu için hücre
-            const editCell = document.createElement('td');
-            const editButton = document.createElement('button');
-            editButton.className = 'btn btn-primary btn-sm';
-            editButton.textContent = 'Düzenle';
-            editButton.addEventListener('click', () => {
+            // Düzenle ikonu
+            const editIcon = document.createElement('i');
+            editIcon.className = 'fas fa-edit';
+            editIcon.style.cursor = 'pointer';
+            editIcon.style.marginBottom = '5px'; // İkonlar arasına boşluk
+            editIcon.addEventListener('click', () => {
                 // Düzenleme formunu göster
                 toggleEditForm(row, item);
             });
-            editCell.appendChild(editButton);
-            row.appendChild(editCell);
+            actionsCell.appendChild(editIcon);
 
-            // Silme butonu için hücre
-            const deleteCell = document.createElement('td');
-            const deleteButton = document.createElement('button');
-            deleteButton.className = 'btn btn-danger btn-sm';
-            deleteButton.textContent = 'Sil';
-            deleteButton.addEventListener('click', async () => {
+            // Silme ikonu
+            const deleteIcon = document.createElement('i');
+            deleteIcon.className = 'fas fa-trash';
+            deleteIcon.style.cursor = 'pointer';
+            deleteIcon.addEventListener('click', async () => {
                 const confirmDelete = confirm('Bu maçı silmek istediğinize emin misiniz?');
                 if (confirmDelete) {
                     try {
@@ -293,8 +379,9 @@
                     }
                 }
             });
-            deleteCell.appendChild(deleteButton);
-            row.appendChild(deleteCell);
+            actionsCell.appendChild(deleteIcon);
+
+            row.appendChild(actionsCell);
 
             tbody.appendChild(row);
         });
@@ -302,49 +389,55 @@
         table.appendChild(tbody);
         matchContainer.appendChild(table);
 
-        // Bootstrap CSS ekleyelim
+        // Bootstrap ve Font Awesome CSS ekleyelim
         addBootstrapCSS();
+        addFontAwesomeCSS();
     }
 
     // Tahmin sonucunu güncelleyen fonksiyon
-    function updateMatchResult(item, result, statusCell) {
-        const { date, category, matchId } = item;
-        let updates = {
-            userResult: result
-        };
+// Tahmin sonucunu güncelleyen fonksiyon
+function updateMatchResult(item, result) {
+    const { date, category, matchId } = item;
+    let updates = {
+        userResult: result
+    };
 
-        // Eğer 'won' veya 'lost' ise 'status' alanını 'tamamlandı' yap
-        if (result === 'won' || result === 'lost') {
-            updates.status = 'tamamlandı';
+    if (result === 'won' || result === 'lost') {
+        updates.status = 'tamamlandı';
 
-            // Eğer kategori 'Free' ve sonuç 'won' ise 'winners' bölümüne ekle
-            if (category !== 'Free' && result === 'won') {
-                const winnerData = {
-                    ...item.matchData,
-                    date: date,
-                    category: category,
-                    matchId: matchId
-                };
-                firebase.database().ref(`winners/${date}/${matchId}`).set(winnerData);
+        if (category !== 'Free' && result === 'won') {
+            const matchData = item.matchData;
+
+            // odds ve coinAmount değerlerini sayısal değerlere dönüştür
+            const oddsNumber = typeof matchData.odds === 'number' ? matchData.odds : parseFloat(matchData.odds);
+            const coinAmountNumber = typeof matchData.coinAmount === 'number' ? matchData.coinAmount : parseInt(matchData.coinAmount, 10);
+
+            const winnerData = {
+                ...matchData,
+                odds: oddsNumber,
+                coinAmount: coinAmountNumber,
+                date: date,
+                category: category,
+                matchId: matchId
+            };
+            firebase.database().ref(`winners/${date}/${matchId}`).set(winnerData);
+        }
+    }
+
+    firebase.database().ref(`predictions/${date}/${category}/${matchId}`).update(updates).then(() => {
+        const matchToUpdate = allMatchesData.find(m => m.date === date && m.category === category && m.matchId === matchId);
+        if (matchToUpdate) {
+            matchToUpdate.matchData.userResult = result;
+            if (result === 'won' || result === 'lost') {
+                matchToUpdate.matchData.status = 'tamamlandı';
             }
         }
+    }).catch(error => {
+        console.error('Sonuç güncellenirken hata oluştu:', error);
+        alert('Sonuç güncellenirken bir hata oluştu.');
+    });
+}
 
-        firebase.database().ref(`predictions/${date}/${category}/${matchId}`).update(updates).then(() => {
-            // allMatchesData'daki veriyi güncelle
-            const matchToUpdate = allMatchesData.find(m => m.date === date && m.category === category && m.matchId === matchId);
-            if (matchToUpdate) {
-                matchToUpdate.matchData.userResult = result;
-                if (result === 'won' || result === 'lost') {
-                    matchToUpdate.matchData.status = 'tamamlandı';
-                }
-            }
-            // Sadece ilgili hücreyi güncelle
-            statusCell.textContent = matchToUpdate.matchData.status || '-';
-        }).catch(error => {
-            console.error('Sonuç güncellenirken hata oluştu:', error);
-            alert('Sonuç güncellenirken bir hata oluştu.');
-        });
-    }
 
     // Düzenleme formunu gösteren fonksiyon
     function toggleEditForm(row, item) {
@@ -361,7 +454,7 @@
             editFormRow.className = 'edit-form-row';
 
             const editFormCell = document.createElement('td');
-            editFormCell.colSpan = 15; // Sütun sayısına göre ayarlayın
+            editFormCell.colSpan = 13; // Sütun sayısına göre ayarlayın
 
             // Formu oluştur
             const editForm = document.createElement('form');
@@ -445,36 +538,42 @@
     }
 
     // Düzenleme formunu kaydeden fonksiyon
-    function saveEditForm(item, predictionType, predictionValue, odds, coinAmount, row) {
-        const { date, category, matchId } = item;
+    // Düzenleme formunu kaydeden fonksiyon
+function saveEditForm(item, predictionType, predictionValue, odds, coinAmount, row) {
+    const { date, category, matchId } = item;
 
-        // Mevcut veriyi güncelle
-        firebase.database().ref(`predictions/${date}/${category}/${matchId}`).update({
-            predictionType: predictionType,
-            predictionValue: predictionValue,
-            odds: odds,
-            coinAmount: coinAmount
-        }).then(() => {
-            // allMatchesData'daki veriyi güncelle
-            item.matchData.predictionType = predictionType;
-            item.matchData.predictionValue = predictionValue;
-            item.matchData.odds = odds;
-            item.matchData.coinAmount = coinAmount;
+    // odds ve coinAmount değerlerini sayısal değerlere dönüştür
+    const oddsNumber = parseFloat(odds);
+    const coinAmountNumber = parseInt(coinAmount, 10);
 
-            // Tablodaki satırı güncelle
-            const cells = row.getElementsByTagName('td');
-            // Tahmin hücresi (index 6)
-            cells[6].textContent = `${predictionType || '-'} - ${predictionValue || '-'}`;
-            // Oran hücresi (index 7)
-            cells[7].textContent = odds || '-';
-            // Coin hücresi (index 8)
-            cells[8].textContent = coinAmount || '-';
+    // Mevcut veriyi güncelle
+    firebase.database().ref(`predictions/${date}/${category}/${matchId}`).update({
+        predictionType: predictionType,
+        predictionValue: predictionValue,
+        odds: oddsNumber,             // Sayısal değer olarak kaydet
+        coinAmount: coinAmountNumber  // Sayısal değer olarak kaydet
+    }).then(() => {
+        // allMatchesData'daki veriyi güncelle
+        item.matchData.predictionType = predictionType;
+        item.matchData.predictionValue = predictionValue;
+        item.matchData.odds = oddsNumber;
+        item.matchData.coinAmount = coinAmountNumber;
 
-        }).catch(error => {
-            console.error('Maç güncellenirken hata oluştu:', error);
-            alert('Maç güncellenirken bir hata oluştu.');
-        });
-    }
+        // Tablodaki satırı güncelle
+        const cells = row.getElementsByTagName('td');
+        // Tahmin hücresi (index 6)
+        cells[6].textContent = `${predictionType || '-'} - ${predictionValue || '-'}`;
+        // Oran hücresi (index 7)
+        cells[7].textContent = oddsNumber || '-';
+        // Coin hücresi (index 8)
+        cells[8].textContent = coinAmountNumber || '-';
+
+    }).catch(error => {
+        console.error('Maç güncellenirken hata oluştu:', error);
+        alert('Maç güncellenirken bir hata oluştu.');
+    });
+}
+
 
     // Seçilen kategoriye göre maçları filtreleyen fonksiyon
     function filterMatchesByCategory() {
@@ -488,9 +587,12 @@
 
     // Winners bölümünü yükleyen fonksiyon
     async function loadWinners() {
-      
+        // İsteğinize göre bu bölümü doldurabilirsiniz.
     }
 
+    // Bootstrap CSS ekleme fonksiyonu
+
+  
 
 
     window.addEventListener('load', loadSavedMatches);
