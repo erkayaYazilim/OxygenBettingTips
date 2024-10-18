@@ -152,7 +152,7 @@
                 const { date, category, matchId, matchData } = item;
 
                 // Eğer maç tamamlanmamışsa veya skor bilgileri eksikse
-                if (!matchData.fulltimeScore || !matchData.halftimeScore) {
+                if (!matchData.fulltimeScore || matchData.fulltimeScore === '-' || !matchData.halftimeScore || matchData.halftimeScore === '-') {
                     // API'den maç skorlarını çekelim
                     const matchResult = await fetchMatchResultFromAPI(matchData.matchId);
 
