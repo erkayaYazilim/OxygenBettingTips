@@ -1,14 +1,13 @@
-// Firebase yapılandırması ve başlatma işlemi
 const firebaseConfig = {
-    apiKey: "AIzaSyDUlNruDU2t6jnznqf_CAT85rEJ6Qe_kAk",
-    authDomain: "oxygen-6b822.firebaseapp.com",
-    projectId: "oxygen-6b822",
-    storageBucket: "oxygen-6b822.appspot.com",
-    messagingSenderId: "883096546595",
-    appId: "1:883096546595:web:c5e1949b8bd4a81c1f3096",
-    measurementId: "G-N4SPJC2ZGH"
-};
-
+    apiKey: "AIzaSyCHXVyPNknC2e-vMugP36y9HBuqE4tDiGs",
+    authDomain: "oxygenpro-ed923.firebaseapp.com",
+    databaseURL: "https://oxygenpro-ed923-default-rtdb.firebaseio.com",
+    projectId: "oxygenpro-ed923",
+    storageBucket: "oxygenpro-ed923.firebasestorage.app",
+    messagingSenderId: "282301344210",
+    appId: "1:282301344210:web:881aed45f625d1889d400b",
+    measurementId: "G-66X1W238L8"
+  };
 // Firebase'i başlat
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
