@@ -450,6 +450,8 @@
                 coinAmount = 0;
             }
 
+            
+
             // Maçı manuel olarak veritabanına kaydet
             const manualPredictionData = {
                 matchId: fixtureId,

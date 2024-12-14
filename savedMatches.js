@@ -597,3 +597,9 @@ function saveEditForm(item, predictionType, predictionValue, odds, coinAmount, r
 
     window.addEventListener('load', loadSavedMatches);
 })();
+
+function convertToTurkeyTime(dateTime) {
+    const utcDate = new Date(dateTime); // UTC saat
+    const turkeyDate = new Date(utcDate.getTime() + (3 * 60 * 60 * 1000)); // UTC+3 (Türkiye saati)
+    return turkeyDate.toLocaleString('tr-TR'); // Türkiye saatine göre formatlanmış zaman
+}
